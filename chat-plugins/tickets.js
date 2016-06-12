@@ -4,9 +4,9 @@ let fs = require('fs');
 let path = require('path');
 
 let rewardcentre = [
-        ['Monobuck!', 'Buys 1 buck. (PM an Admin or leader immediately after purchase.)', 75],
-        ['Pentabucks!', 'Buys 5 bucks. (PM an Admin or leader immediately after purchase.)', 300],
-        ['Decabucks!', 'Buys 10 buck. (PM an Admin or leader immediately after purchase.)', 500],
+        ['Monobuck!', 'Buys 1 buck. (PM an Admin or leader immediately after purchase.)', 150],
+        ['Pentabucks!', 'Buys 5 bucks. (PM an Admin or leader immediately after purchase.)', 600],
+        ['Decabucks!', 'Buys 10 buck. (PM an Admin or leader immediately after purchase.)', 1000],
         ['1x PSGO', 'Buys 1 PSGO pack. (PM an Admin immediately after purchase.)', 1000],
 	['Avatar', 'Buys an custom avatar to be applied to your name (You supply. Images must be 80x80 otherwise they may not show correctly.)', 2000],
 	['3x PSGO', 'Buys 3 PSGO packs. (PM an Admin immediately after purchase.)', 2500],
