@@ -3517,4 +3517,3 @@ exports.BattleScripts = {
  		return team;
  	},
  };
- };
