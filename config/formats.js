@@ -498,7 +498,7 @@ exports.Formats = [
 		},
 	},
 	{
-		name: Super Staff Bros. Melee",
+		name: "Super Staff Bros. Melee",
 		desc: ["&bullet; <a href=\"https://www.smogon.com/forums/threads/3491902/\">Seasonal Ladder</a>"],
 		section: "Other Metagames",
 
