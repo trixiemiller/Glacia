@@ -77,16 +77,8 @@ exports.Formats = [
 		],
 		section: "ORAS Singles",
 
-		searchShow: false,
 		ruleset: ['UU'],
 		banlist: ['UU', 'BL2'],
-	},
-	{
-		name: "RU (suspect test)",
-		section: "ORAS Singles",
-
-		ruleset: ['RU'],
-		banlist: ['Steelixite', 'Tyrantrum'],
 	},
 	{
 		name: "NU",
@@ -125,26 +117,17 @@ exports.Formats = [
 		banlist: ['LC Uber', 'Gligar', 'Misdreavus', 'Scyther', 'Sneasel', 'Tangela', 'Dragon Rage', 'Sonic Boom', 'Swagger'],
 	},
 	{
-		name: "Anything Goes",
+		name: "CAP",
 		desc: [
-			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3523229/\">Anything Goes</a>",
-			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3548945/\">AG Resources</a>",
+			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3537407/\">CAP Metagame Discussion</a>",
+ 			"&bullet; <a href=\"https://www.smogon.com/dex/xy/formats/cap/\">CAP Banlist</a>",
+ 			"&bullet; <a href=\"https://www.smogon.com/forums/threads/3545628/\">CAP Viability Ranking</a>",
 		],
 		section: "ORAS Singles",
 
-		ruleset: ['Pokemon', 'Endless Battle Clause', 'HP Percentage Mod', 'Cancel Mod', 'Team Preview'],
-		banlist: ['Unreleased', 'Illegal'],
+		ruleset: ['OU'],
+ 		banlist: ['Allow CAP'],
 	},
-	/*{
-		name: "CAP Crucibelle Playtest",
-		section: "ORAS Singles",
-
-		ruleset: ['Pokemon', 'Standard', 'Baton Pass Clause', 'Swagger Clause', 'Team Preview'],
-		banlist: ['Allow CAP', 'Uber', 'Shadow Tag', 'Soul Dew',
-			'Syclant', 'Revenankh', 'Pyroak', 'Fidgit', 'Stratagem', 'Arghonaut', 'Kitsunoh', 'Cyclohm', 'Colossoil', 'Krilowatt', 'Voodoom',
-			'Tomohawk', 'Necturna', 'Mollux', 'Aurumoth', 'Malaconda', 'Cawmodore', 'Volkraken', 'Plasmanta', 'Naviathan',
-		],
-	},*/
 	{
 		name: "Battle Spot Singles",
 		desc: [
@@ -219,12 +202,22 @@ exports.Formats = [
 		section: "ORAS Doubles",
 
 		gameType: 'doubles',
+		searchShow: false,
 		ruleset: ['Pokemon', 'Standard Doubles', 'Team Preview'],
 		banlist: ['Arceus', 'Dialga', 'Giratina', 'Giratina-Origin', 'Groudon', 'Ho-Oh', 'Kyogre', 'Kyurem-White', 'Lugia',
 			'Mewtwo', 'Palkia', 'Rayquaza', 'Reshiram', 'Salamence-Mega', 'Salamencite', 'Shaymin-Sky', 'Xerneas', 'Yveltal', 'Zekrom',
 			'Soul Dew', 'Dark Void', 'Gravity ++ Grass Whistle', 'Gravity ++ Hypnosis', 'Gravity ++ Lovely Kiss', 'Gravity ++ Sing', 'Gravity ++ Sleep Powder', 'Gravity ++ Spore',
 		],
 	},
+	{
+ 		name: "Doubles OU (suspect test)",
+ 		section: "ORAS Doubles",
+ 
+ 		gameType: 'doubles',
+ 		challengeShow: false,
+ 		ruleset: ['Doubles OU'],
+ 		banlist: [],
+ 	},
 	{
 		name: "Doubles Ubers",
 		desc: ["&bullet; <a href=\"https://www.smogon.com/forums/threads/3542746/\">Doubles Ubers</a>"],
@@ -402,11 +395,75 @@ exports.Formats = [
 
 	// Other Metagames
 	///////////////////////////////////////////////////////////////////
-
+	{
+ 		name: "[Seasonal] June Jubilee: Revenge",
+ 		desc: ["&bullet; <a href=\"https://www.smogon.com/forums/threads/3491902/\">Seasonal Ladder</a>"],
+ 		section: "Seasonal",
+ 		column: 2,
+ 
+ 		team: 'randomSeasonalJubilee',
+ 		ruleset: ['Sleep Clause Mod', 'Freeze Clause Mod', 'HP Percentage Mod', 'Cancel Mod'],
+ 		onBegin: function () {
+ 			this.add('message', "You were traveling with your fellow Delibird around the world, when your mortal enemy attacked you, seeking revenge since you defeated them on June 2013. Palkia inverted space, so you need to help it reach the south pole before summer starts!");
+ 			this.setWeather('Sunny Day');
+ 			delete this.weatherData.duration;
+ 		},
+ 		onBeforeMove: function (pokemon, target, move) {
+ 			// Reshiram changes weather with its tail until you reach the arctic
+ 			if (pokemon.template.speciesid === 'reshiram' && pokemon.side.battle.turn < 15) {
+ 				let weatherMsg = '';
+ 				let dice = this.random(100);
+ 				if (dice < 25) {
+ 					this.setWeather('Rain Dance');
+ 					weatherMsg = 'a Drizzle';
+				} else if (dice < 50) {
+					this.setWeather('Sunny Day');
+ 					weatherMsg = 'a Sunny Day';
+ 				} else if (dice < 75) {
+ 					this.setWeather('Hail');
+ 					weatherMsg = 'Hail';
+ 				} else {
+ 					this.setWeather('Sandstorm');
+ 					weatherMsg = 'a Sandstorm';
+ 				}
+ 				this.add('-message', "Reshiram caused " + weatherMsg + " with its tail!");
+ 				delete this.weatherData.duration;
+ 			}
+ 
+ 			if (!pokemon.side.battle.seasonal) pokemon.side.battle.seasonal = {'none':false, 'drizzle':false, 'hail':false};
+ 			if (pokemon.side.battle.turn >= 4 && pokemon.side.battle.seasonal.none === false) {
+ 				this.add('-message', "You are travelling south and you have arrived to Sao Paulo! There's a clear sky and the temperature is lower here.");
+ 				this.clearWeather();
+ 				pokemon.side.battle.seasonal.none = true;
+ 			}
+ 			if (pokemon.side.battle.turn >= 8 && pokemon.side.battle.seasonal.drizzle === false) {
+				this.add('-message', "You are travelling further south and you have arrived to Tierra del Fuego in Argentina! It started raining a lot... and it's getting quite cold.");
+				this.setWeather('Rain Dance');
+				delete this.weatherData.duration;
+				pokemon.side.battle.seasonal.drizzle = true;
+			}
+ 			if (pokemon.side.battle.turn >= 12 && pokemon.side.battle.seasonal.hail === false) {
+ 				this.add('-message', "You have arrived to the antarctic! Defeat the other trainer so Delibird can be free!");
+ 				this.setWeather('Hail');
+ 				delete this.weatherData.duration;
+ 				pokemon.side.battle.seasonal.hail = true;
+ 			}
+ 		},
+ 		onFaint: function (pokemon) {
+ 			if (pokemon.template.id === 'delibird') {
+ 				let winner = 'p1';
+ 				if (pokemon.side.id === 'p1') {
+ 					winner = 'p2';
+ 				}
+ 				this.add('-message', "No!! You let Delibird down. It trusted you. You lost the battle, " + pokemon.side.name + ". But you lost something else: your Pokémon's trust.");
+ 				pokemon.battle.win(winner);
+ 			}
+ 		},
+ 	},
 	{
 		name: "Extreme Tier Shift",
 		desc: ["&bullet; <a href=\"https://www.smogon.com/forums/threads/3540047/\">Extreme Tier Shift</a>"],
-		section: "OM of the Month",
+		section: "Other Metagames",
 		column: 2,
 
 		mod: 'extremets',
@@ -416,7 +473,7 @@ exports.Formats = [
 	{
 		name: "Type Reflector",
 		desc: ["&bullet; <a href=\"https://www.smogon.com/forums/threads/3567348/\">Type Reflector</a>"],
-		section: "OM of the Month",
+		section: "Other Metagames",
 
 		ruleset: ['OU'],
 		banlist: ['Shedinja'],
@@ -453,9 +510,9 @@ exports.Formats = [
 		},
 	},
 	{
-		name: "[Seasonal] Super Staff Bros. Melee",
+		name: Super Staff Bros. Melee",
 		desc: ["&bullet; <a href=\"https://www.smogon.com/forums/threads/3491902/\">Seasonal Ladder</a>"],
-		section: "OM of the Month",
+		section: "Other Metagames",
 
 		mod: 'seasonal',
 		team: 'randomSeasonalMelee',
