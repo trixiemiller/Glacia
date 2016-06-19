@@ -3470,7 +3470,7 @@ exports.BattleScripts = {
 
 		return pokemon;
 	},
-		randomSeasonalJubileeTeam: function (side) {
+	randomSeasonalJubileeTeam: function (side) {
  		let seasonalPokemonList = [
  			'accelgor', 'aggron', 'arceusbug', 'ariados', 'armaldo', 'aurumoth', 'beautifly', 'beedrill', 'bellossom', 'blastoise',
  			'butterfree', 'castform', 'charizard', 'cherrim', 'crawdaunt', 'crustle', 'delcatty', 'drifblim', 'durant',
@@ -3517,4 +3517,4 @@ exports.BattleScripts = {
  		return team;
  	},
  };
-};
+ };
