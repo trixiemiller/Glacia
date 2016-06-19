@@ -92,12 +92,12 @@ class Poll {
 		if (this.supportHTML) return this.question;
 		return Tools.escapeHTML(this.question);
 	}
-	
+
 	getOptionMarkup(option) {
- 		if (this.supportHTML) return option.name;
- 		return Tools.escapeHTML(option.name);
- 	}
- 
+		if (this.supportHTML) return option.name;
+		return Tools.escapeHTML(option.name);
+	}
+
 	update() {
 		let results = [];
 
@@ -186,27 +186,28 @@ exports.commands = {
 		new: function (target, room, user, connection, cmd, message) {
 			if (!target) return this.parse('/help poll new');
 			if (target.length > 1024) return this.errorReply("Poll too long.");
-			
+
 			const supportHTML = cmd === 'htmlcreate';
 			const separator = target.match(/[\n\|,]/);
- 			if (!separator) return this.errorReply("Not enough arguments for /poll new.");
- 			if (separator[0] !== '\n') {
- 				if (/\n\//.test(target)) return this.errorReply("/poll " + cmd + " is a multiline command now. Please send queued commands separately instead.");
- 				target = target.replace(/[\r\n]+/g, '');
- 			}
- 
- 			let params = target.split(separator[0]).map(param => param.trim());
- 			
+			if (!separator) return this.errorReply("Not enough arguments for /poll new.");
+			if (separator[0] !== '\n') {
+				if (/\n\//.test(target)) return this.errorReply("/poll " + cmd + " is a multiline command now. Please send queued commands separately instead.");
+				target = target.replace(/[\r\n]+/g, '');
+			}
+
+			let params = target.split(separator[0]).map(param => param.trim());
+
 			if (!this.can('minigame', null, room)) return false;
 			if (supportHTML && !this.can('declare', null, room)) return false;
 			if (!this.canTalk()) return this.errorReply("You cannot do this while unable to talk.");
 			if (room.poll) return this.errorReply("There is already a poll in progress in this room.");
 			if (params.length < 3) return this.errorReply("Not enough arguments for /poll new.");
-			
+
 			if (supportHTML) params = params.map(parameter => this.canHTML(parameter));
- 			if (params.some(parameter => !parameter)) return;
-			
-			if (options.length > 12) {
+			if (params.some(parameter => !parameter)) return;
+
+			const options = params.splice(1);
+			if (options.length > 8) {
 				return this.errorReply("Too many options for poll (maximum is 8).");
 			}
 
@@ -310,14 +311,14 @@ exports.commands = {
 	},
 	pollhelp: ["/poll allows rooms to run their own polls. These polls are limited to one poll at a time per room.",
 				"Accepts the following commands:",
-				"/poll create [question], [option1], [option2], [...] - Creates a poll. Requires: + % @ # & ~",
+				"/poll create [question], [option1], [option2], [...] - Creates a poll. Requires: % @ # & ~",
 				"/poll vote [number] - Votes for option [number].",
-				"/poll timer [minutes] - Sets the poll to automatically end after [minutes]. Requires: + % @ # & ~",
+				"/poll timer [minutes] - Sets the poll to automatically end after [minutes]. Requires: % @ # & ~",
 				"/poll results - Shows the results of the poll without voting. NOTE: you can't go back and vote after using this.",
 				"/poll display - Displays the poll",
-				"/poll end - Ends a poll and displays the results. Requires: + % @ # & ~"],
-				
- process.nextTick(() => {
- 	CommandParser.multiLinePattern.register('/poll (new|create|htmlcreate) ');
- });
+				"/poll end - Ends a poll and displays the results. Requires: % @ # & ~"],
+};
 
+process.nextTick(() => {
+	CommandParser.multiLinePattern.register('/poll (new|create|htmlcreate) ');
+});
