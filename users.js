@@ -1546,12 +1546,10 @@ Users.socketReceive = function (worker, workerid, socketid, message) {
 	if (!room) room = Rooms.lobby || Rooms.global;
 	let user = connection.user;
 	if (!user) return;
-	
-	if (CommandParser.multiLinePattern.test(lines)) {
+	if (lines.substr(0, 3) === '>> ' || lines.substr(0, 4) === '>>> ') {
 		user.chat(lines, room, connection);
 		return;
 	}
-	
 	lines = lines.split('\n');
 	if (!lines[lines.length - 1]) lines.pop();
 	if (lines.length > (user.isStaff ? THROTTLE_MULTILINE_WARN_STAFF : THROTTLE_MULTILINE_WARN)) {
