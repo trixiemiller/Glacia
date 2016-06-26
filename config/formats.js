@@ -508,6 +508,7 @@ exports.Formats = [
 		onBegin: function () {
 			this.add("raw|Super Staff Bros. <b>MELEEEEEEEEEEEEEE</b>!!");
 			this.add('message', "SURVIVAL! GET READY FOR THE NEXT BATTLE!");
+			this.add('message', "A guide for the new movesets can be found here - http://pastebin.com/Um0MxSPw");
 
 			let globalRenamedMoves = {};
 			let customRenamedMoves = {};
