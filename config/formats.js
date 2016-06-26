@@ -591,7 +591,7 @@ exports.Formats = [
 				}
 			}
 			if (!this.shownTip) {
-				this.add('raw|<div class=\"broadcast-green\">Huh? But what do all these weird moves do??<br><b>Protip: Refer to the <a href="https://github.com/Zarel/Pokemon-Showdown/blob/master/mods/seasonal/README.md">PLAYER\'S MANUAL</a>!</b></div>');
+				this.add('raw|<div class=\"broadcast-green\">Huh? But what do all these weird moves do??<br><b>Protip: Refer to the <a href="http://pastebin.com/Um0MxSPw">PLAYER\'S MANUAL</a>!</b></div>');
 				this.shownTip = true;
 			}
 		},
