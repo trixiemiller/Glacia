@@ -374,6 +374,8 @@ exports.grouplist = [
 		broadcast: true,
 		warn: true,
 		mute: true,
+		minigame: true,
+		
 	},
 	{
 		symbol: ' ',
