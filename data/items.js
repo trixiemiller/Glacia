@@ -294,9 +294,10 @@ exports.BattleItems = {
 			type: "Steel",
 		},
 		onSourceModifyDamage: function (damage, source, target, move) {
-			if (move.type === 'Steel' && move.typeMod > 0 && !target.volatiles['substitute']) {
+			if (move.type === 'Steel' && move.typeMod > 0 && (!target.volatiles['substitute'] || move.flags['authentic'] || (move.infiltrates && this.gen >= 6))) {
 				if (target.eatItem()) {
 					this.debug('-50% reduction');
+					this.add('-enditem', target, this.effect, '[weaken]');
 					return this.chainModify(0.5);
 				}
 			}
@@ -653,9 +654,10 @@ exports.BattleItems = {
 			type: "Rock",
 		},
 		onSourceModifyDamage: function (damage, source, target, move) {
-			if (move.type === 'Rock' && move.typeMod > 0 && !target.volatiles['substitute']) {
+			if (move.type === 'Rock' && move.typeMod > 0 && (!target.volatiles['substitute'] || move.flags['authentic'] || (move.infiltrates && this.gen >= 6))) {
 				if (target.eatItem()) {
 					this.debug('-50% reduction');
+					this.add('-enditem', target, this.effect, '[weaken]');
 					return this.chainModify(0.5);
 				}
 			}
@@ -729,9 +731,10 @@ exports.BattleItems = {
 			type: "Normal",
 		},
 		onSourceModifyDamage: function (damage, source, target, move) {
-			if (move.type === 'Normal' && !target.volatiles['substitute']) {
+			if (move.type === 'Normal' && (!target.volatiles['substitute'] || move.flags['authentic'] || (move.infiltrates && this.gen >= 6))) {
 				if (target.eatItem()) {
 					this.debug('-50% reduction');
+					this.add('-enditem', target, this.effect, '[weaken]');
 					return this.chainModify(0.5);
 				}
 			}
