@@ -11,67 +11,84 @@ Users.parsePerma = function (userid, targetUser) {
 	if (!userid) return;
 	if (userid in permaUsers) {
 		try {
-			targetUser[permaUsers[userid]](false, userid);
+			if (!Users(userid)) return false;
+			Users(userid).deconfirm(); // prevent any issues with failing to lock
+			Punishments[permaUsers[userid] || "lock"](Users(userid), null, null); // safety catch
+			// Monitor.log("[PermaMonitor] Applied " + permaUsers[userid] + " to user: " + userid);
 		} catch (e) {
-			console.log("ERROR: unable to apply perma to " + userid);
+			Monitor.log("[PermaMonitor] Unable to apply " + permaUsers[userid] + " to user: " + userid);
 		}
 	}
 };
 
 exports.commands = {
-	plock: "permalock",
+plock: 'permalock',
 	permalock: function (target, room, user, connection) {
 		if (!this.can('declare')) return false;
-		if (!target) return this.parse("/help permalock");
+		if (!target) return this.parse('/help permalock');
 		let userid = toId(target);
+		let targetUser = Users(target);
 		if (userid in permaUsers) return this.errorReply("User " + userid + " is already perma" + permaUsers[userid] + (permaUsers[userid] === "ban" ? "ned" : "ed") + ".");
+		if (targetUser && targetUser.confirmed) {
+			let from = targetUser.deconfirm();
+			Monitor.log("[CrisisMonitor] " + targetUser.name + " was permalocked by " + user.name + " and demoted from " + from.join(", ") + ".");
+		}
 		permaUsers[userid] = "lock";
 		try {
-			Users.get(userid).lock(false, userid);
+			Punishments.lock(Users(userid), null, null);
 		} catch (e) {}
 		this.addModCommand(userid + " was permalocked by " + user.name + ".");
 		fs.writeFileSync("config/perma.json", JSON.stringify(permaUsers));
 	},
-	unplock: "unpermalock",
+
+	unplock: 'unpermalock',
 	unpermalock: function (target, room, user, connection) {
 		if (!this.can('declare')) return false;
-		if (!target) return this.parse("/help unpermalock");
+		if (!target) return this.parse('/help unpermalock');
 		let userid = toId(target);
 		if (!(userid in permaUsers) || permaUsers[userid] !== "lock") return this.errorReply(userid + " is not permalocked!");
 		try {
-			Users.unlock(userid);
+			Punishments.unlock(userid);
 		} catch (e) {}
 		delete permaUsers[userid];
 		this.addModCommand(userid + " was unpermalocked by " + user.name + ".");
 		fs.writeFileSync("config/perma.json", JSON.stringify(permaUsers));
 	},
-	pban: "permaban",
+
+	pban: 'permaban',
 	permaban: function (target, room, user, connection) {
 		if (!this.can('declare')) return false;
-		if (!target) return this.parse("/help permaban");
+		if (!target) return this.parse('/help permaban');
 		let userid = toId(target);
+		let targetUser = Users(target);
 		if (userid in permaUsers && permaUsers[userid] === "ban") return this.errorReply("User " + userid + " is already permabanned.");
+		if (targetUser && targetUser.confirmed) {
+			let from = targetUser.deconfirm();
+			Monitor.log("[CrisisMonitor] " + targetUser.name + " was perma banned by " + user.name + " and demoted from " + from.join(", ") + ".");
+		}
 		permaUsers[userid] = "ban";
 		try {
-			Users.get(userid).ban(false, userid);
+			Punishments.ban(Users(userid), null, null);
 		} catch (e) {}
 		this.addModCommand(userid + " was permabanned by " + user.name + ".");
 		fs.writeFileSync("config/perma.json", JSON.stringify(permaUsers));
 	},
-	unpban: "unpermaban",
+
+	unpban: 'unpermaban',
 	unpermaban: function (target, room, user, connection) {
 		if (!this.can('declare')) return false;
-		if (!target) return this.parse("/help unpermaban");
+		if (!target) return this.parse('/help unpermaban');
 		let userid = toId(target);
 		if (!(userid in permaUsers) || permaUsers[userid] !== "ban") return this.errorReply(userid + " is not permabanned!");
 		try {
-			Users.unban(userid);
+			Punishments.unban(userid);
 		} catch (e) {}
 		delete permaUsers[userid];
 		this.addModCommand(userid + " was unpermabanned by " + user.name + ".");
 		fs.writeFileSync("config/perma.json", JSON.stringify(permaUsers));
 	},
-	plist: "permalist",
+
+	plist: 'permalist',
 	permalist: function (target, room, user, connection) {
 		if (!this.can('declare')) return false;
 		let buffer = ["<b>Perma'd users:</b>", ""];
